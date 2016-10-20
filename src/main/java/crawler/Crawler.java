@@ -47,7 +47,8 @@ public class Crawler {
                 for (String linkI:link) {
 
                 	try {
-                     navigatePage(linkI);
+			 	System.out.println("**********************************["+linkI+"]**********************************");	
+                     		navigatePage(linkI);
                 	} catch (SocketTimeoutException ste) {
                 	 ste.printStackTrace();
                 	}
