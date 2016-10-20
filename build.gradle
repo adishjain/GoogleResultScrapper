@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'application'
+
+
+group = 'adishjain'
+version = '0.0.1-SNAPSHOT'
+
+description = """GoogleResultScrapper"""
+
+repositories {
+        
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'org.jsoup', name: 'jsoup', version:'1.9.2'
+}
+
+mainClassName = "crawler.Crawler" 
