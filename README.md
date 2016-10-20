@@ -6,7 +6,7 @@ This plain java code uses JSoup to scrap the URLs of the search results.
 1. Right now it just scrapes the front page results. These are limited to 10 for now.
 2. Goes through each of the resulting URLs and scrapes the "p", "span", "strong", "b", "pre", "summary" tag within the page.
 
-###Features to added soon
+##Features to added soon
 1. Maintaing the list of results from all the pages.
 2. More tags to be tracked for the text.
 3. Downloading images from the crawled webpages.
