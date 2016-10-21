@@ -11,3 +11,15 @@ This plain java code uses JSoup to scrap the URLs of the search results.
 2. More tags to be tracked for the text.
 3. Downloading images from the crawled webpages.
 4. Maintain a separate file for each of the url. The file will contain text and images as well.
+
+###Using the python code
+To run the code, you'll need to install 2 python modules:
+####Readability API
+    pip install readibility-api 
+####google-api-python-client    
+    pip install google-api-python-client
+
+Also generate custom search API keys through the Google API dashboard.
+Similarly for readiblity API ,generate keys by registering yourself in the readiblity dashboard.
+
+Fill up the keys in the space provided in the code and you are good to go.
