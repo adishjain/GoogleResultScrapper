@@ -8,6 +8,7 @@ import java.net.SocketTimeoutException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -18,53 +19,64 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import POJO.ScrapedResult;
+
 public class Crawler {
+    public static ArrayList<String> dates;
 
     private static final String USER_AGENT_MAC = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36";
 
-	public static void main(String[] args) throws IOException {
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        System.out.println("Enter query");
-        Scanner sc = new Scanner(System.in);
-        String query = sc.nextLine();
-        query.replaceAll(" ","+");
-        System.out.println("Enter the Date_Range you want to search the results for");
-        System.out.println("Min:");
-        String m_Date = sc.next();
-        System.out.println("Max:");
-        String max_Date = sc.next();
-        System.out.println("Enter the type of tab :");
-        System.out.println("News: nws \n Video: vid \n All: all");
-        String tbm = sc.next();
-        Date minDate = new Date(),maxDate = new Date();
+	public static void input(String query, ScrapedResult scrapedResult, String date){
+        DateFormat formatter = new SimpleDateFormat("DD/MM/YYYY");
+        Date wanted = new Date();
         try {
-            minDate = (Date)formatter.parse(m_Date);
-            //System.out.println(""+minDate.getDate());
-            maxDate = (Date)formatter.parse(max_Date);
+            String[] date_all = date.split("/");
+            wanted = (Date)formatter.parse(date);
+            processPage(scrapedResult,wanted,"https://www.google.co.in/search?q="+query+"&hl=en&gl=in&as_drrb=b&authuser=0&source=lnt&tbs=cdr%3A1%2Ccd_min%3A"+date_all[0]+"%2F"+date_all[1]+"%2F"+date_all[2]+"%2Ccd_max%3A"+date_all[0]+"%2F"+date_all[1]+"%2F"+date_all[2]+"&tbm=nws");
         } catch (ParseException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+                e.printStackTrace();
+            }
+    }
+
+    public ArrayList<String> pickDates(){
+        dates = new ArrayList<String>();
+        Scanner sc = new Scanner(System.in);
+        String date = sc.nextLine();
+        while (!date.equals("-1")){
+            dates.add(date);
+            date = sc.nextLine();
         }
-        //Custom url goes here
-        if (tbm.equals("all")){
-            //System.out.println("https://www.google.co.in/search?q="+query+"&hl=en&gl=in&as_drrb=b&authuser=0&source=lnt&tbs=cdr%3A1%2Ccd_min%3A"+minDate.getDate()+"%2F"+minDate.getMonth()+"%2F"+minDate.getYear()+"%2Ccd_max%3A"+maxDate.getDate());
-            processPage("https://www.google.co.in/search?q="+query+"&hl=en&gl=in&as_drrb=b&authuser=0&source=lnt&tbs=cdr%3A1%2Ccd_min%3A"+minDate.getDate()+"%2F"+minDate.getMonth()+"%2F"+minDate.getYear()+"%2Ccd_max%3A"+maxDate.getDate()+"%2F"+maxDate.getMonth()+"%2F"+maxDate.getYear());
-        }
-        else{
-            processPage("https://www.google.co.in/search?q="+query+"&hl=en&gl=in&as_drrb=b&authuser=0&source=lnt&tbs=cdr%3A1%2Ccd_min%3A"+minDate.getDate()+"%2F"+minDate.getMonth()+"%2F"+minDate.getYear()+"%2Ccd_max%3A"+maxDate.getDate()+"%2F"+maxDate.getMonth()+"%2F"+maxDate.getYear()+"&tbm="+tbm);
+        //sc.close();
+
+        return dates;
+    }
+
+    public static void main(String[] args) throws IOException {
+        Crawler crawler = new Crawler();
+        dates = crawler.pickDates();
+        ScrapedResult[] pojo = new ScrapedResult[dates.size()];
+        Scanner sc = new Scanner(System.in);
+        String query = sc.next();
+        query.replaceAll(" ","+");
+        sc.close();
+        int i=0;
+        for (String date:
+                dates) {
+            input(query,pojo[i++],date);
         }
     }
 
-    public static void processPage(String URL) throws IOException {
+    public static void processPage(ScrapedResult scrapedResult, Date wanted, String URL) throws IOException {
 
             System.out.println("------ :\t\t" + URL+"\t\t: ------");
             Document doc = null;
             try {
-                //Just an agent definition. Don't worry about it
                 doc = Jsoup.connect(URL).userAgent(USER_AGENT_MAC).get();
-                //Class of <a> tag under which results are placed
+                System.out.println(""+doc.html());
                 Elements Tags = doc.select( "a.l._HId" );
                 Iterator<Element> tagIterator = Tags.iterator();
-                //link[] will contain the links to the result-webpages
                 String[] link = new String[10];
                 int i=0;
                 while (tagIterator.hasNext() && i<10){
@@ -73,44 +85,31 @@ public class Crawler {
                     System.out.println(link[i]);
                     i++;
                 }
-
                 for (String linkI:link) {
 
                 	try {
-			 	System.out.println("**********************************["+linkI+"]**********************************");	
-                     		navigatePage(linkI);
+			 	System.out.println("**********************************["+linkI+"]**********************************");
+                        navigatePage(scrapedResult,wanted,linkI);
                 	} catch (SocketTimeoutException ste) {
                 	 ste.printStackTrace();
                 	}
-
                 }
-
             } catch (Exception e1) {
                 e1.printStackTrace();
                 return;
             }
-
-
     }
 
-    private static void navigatePage(String linkI) throws IOException ,HttpStatusException {
-
+    private static void navigatePage(ScrapedResult scrapedResult, Date wanted, String linkI) throws IOException ,HttpStatusException {
+        scrapedResult = new ScrapedResult();
+        scrapedResult.setDate(wanted);
         Document doc = Jsoup.connect(linkI).userAgent(USER_AGENT_MAC).get();
-        //Selected the <p> tag here
-        extractTag(doc,"p");
-        extractTag(doc,"span");
-   		extractTag(doc,"strong");
-		extractTag(doc,"b");
-		extractTag(doc,"pre");
-		extractTag(doc,"summary");
-
+        String resultText = extractText(doc);
+        scrapedResult.setText(resultText);
     }
 
-	private static void extractTag(Document doc,String tag) {
-
-		System.out.println("----------------------------------[ "+tag+" ]----------------------------------");
-		Elements tags = doc.select(tag);
-        System.out.println(tags.text());
-
+	private static String extractText(Document doc) {
+        System.out.println(doc.text());
+        return doc.text();
 	}
 }
