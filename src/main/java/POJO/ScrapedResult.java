@@ -7,24 +7,23 @@ import java.util.Date;
  * Created by Last on 10/21/2016.
  */
 public class ScrapedResult {
-    public Date getDate() {
+    String date;
+    String text;
+
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    Date date;
-
-    public ArrayList<String> getText() {
+    public String getText() {
         return text;
     }
 
     public void setText(String data) {
-        text.add(data);
+        this.text = text;
     }
-
-    ArrayList<String> text = new ArrayList<String>();
 
 }
