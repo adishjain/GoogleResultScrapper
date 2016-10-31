@@ -23,11 +23,8 @@ public class ScrapedResult {
     }
 
     public void setText(String data) {
-<<<<<<< HEAD
+
         this.text += data;
-=======
-        this.text = text;
->>>>>>> 5f56adfef32fc08506ff3ccc5694ac42f3d6168e
     }
 
 }

@@ -16,11 +16,8 @@ import java.io.*;
 public class SaveInFile{
 	public void writeFile(ArrayList<ScrapedResult> list){
 
-<<<<<<< HEAD
+
         File file=new File("/scrapperNew.txt");
-=======
-        File file=new File("/scrapper.txt");
->>>>>>> 5f56adfef32fc08506ff3ccc5694ac42f3d6168e
         StringBuffer content=new StringBuffer();
         JSONObject jsonObject = new JSONObject();
         for (ScrapedResult scr:
