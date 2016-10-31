@@ -26,6 +26,8 @@ import POJO.ScrapedResult;
 public class Crawler {
     public static ArrayList<String> dates;
 
+    public static int delay;
+
     private static final String USER_AGENT_MAC = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36";
 
 	public static ArrayList<ScrapedResult> input(String query, ScrapedResult scrapedResult, String date){
@@ -65,6 +67,8 @@ public class Crawler {
         ArrayList<ScrapedResult> resultList = new ArrayList<ScrapedResult>();
         Crawler crawler = new Crawler();
 
+        delay = 10;         // 10 seconds
+
 //        10/10/2014
 //        17/07/2000
 //        15/10/2016
@@ -97,6 +101,8 @@ public class Crawler {
             ArrayList<ScrapedResult> resultList= new ArrayList<ScrapedResult>();
             System.out.println("------ :\t\t" + URL+"\t\t: ------");
             Document doc = null;
+
+
             try {
                 doc = Jsoup.connect(URL).userAgent(USER_AGENT_MAC).get();
                 //System.out.println(""+doc.html());
@@ -121,6 +127,13 @@ public class Crawler {
                 e1.printStackTrace();
                 return null;
             }
+
+            try{
+                Thread.sleep(delay * 1000);
+            }catch(InterruptedException ie){
+                
+            }
+
         System.out.println("HA  "+resultList.size());
             return resultList;
     }
