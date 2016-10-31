@@ -8,11 +8,9 @@ import java.net.SocketTimeoutException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import fileHandling.SaveInFile;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -29,14 +27,15 @@ public class Crawler {
     private static final String USER_AGENT_MAC = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36";
 
 	public static ArrayList<ScrapedResult> input(String query, ScrapedResult scrapedResult, String date){
+        System.out.println("I'm here and the date is "+date.toString());
         ArrayList<ScrapedResult> resultList = new ArrayList<ScrapedResult>();
-        DateFormat formatter = new SimpleDateFormat("DD/MM/YYYY");
-        String wanted = date;
+//        DateFormat formatter = new SimpleDateFormat("/MM/YYYY");
+//        String wanted = date;
         try {
             String[] date_all = date.split("/");
             //wanted = (Date)formatter.parse(date);
-            System.out.println("HAHAHAHAHA "+wanted.toString());
-            resultList = processPage(scrapedResult,wanted,"https://www.google.co.in/search?q="+query+"&hl=en&gl=in&as_drrb=b&authuser=0&source=lnt&tbs=cdr%3A1%2Ccd_min%3A"+date_all[0]+"%2" + "F"+date_all[1]+"%2F"+date_all[2]+"%2Ccd_max%3A"+date_all[0]+"%2F"+date_all[1]+"%2F"+date_all[2]+"&tbm=nws");
+//            System.out.println("HAHAHAHAHA "+wanted.toString());
+            resultList = processPage(scrapedResult,date,"https://www.google.co.in/search?q="+query+"&hl=en&gl=in&as_drrb=b&authuser=0&source=lnt&tbs=cdr%3A1%2Ccd_min%3A"+date_all[0]+"%2" + "F"+date_all[1]+"%2F"+date_all[2]+"%2Ccd_max%3A"+date_all[0]+"%2F"+date_all[1]+"%2F"+date_all[2]+"&tbm=nws");
        }
 //       catch (ParseException e) {
 //            e.printStackTrace();
@@ -47,15 +46,36 @@ public class Crawler {
             return resultList;
     }
 
-    public ArrayList<String> pickDates(){
+    public ArrayList<String> pickDates() {
         dates = new ArrayList<String>();
         System.out.println("Dates");
-        Scanner sc = new Scanner(System.in);
-        String date = sc.nextLine();
-        while (!date.equals("-1")){
-            dates.add(date);
-            date = sc.nextLine();
+        //Scanner sc = new Scanner(System.in);
+        //String date = sc.nextLine();
+
+        //////////////////
+        String dt = "18/03/2009";  // Start date
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        Calendar c = Calendar.getInstance();
+        try {
+            c.setTime(sdf.parse(dt));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+        while(!dt.toString().equals("21/03/2009")) {
+            c.add(Calendar.DATE, 1);  // number of days to add
+            dt = sdf.format(c.getTime());
+            dates.add(dt.toString());
+            System.out.println(""+dt.toString());
+            System.out.println("111111111111111111111");
+        }
+        //////////////////
+
+//        while (!date.equals("-1")){
+//            dates.add(date);
+//            date = sc.nextLine();
+//        }
         //sc.close();
 
         return dates;
@@ -71,6 +91,7 @@ public class Crawler {
 //        -1
 
         dates = crawler.pickDates();
+        System.out.println("Dates size : "+dates.size());
         ScrapedResult pojo = null;
         SaveInFile saveInFile = new SaveInFile();
         Scanner sc = new Scanner(System.in);
@@ -135,17 +156,29 @@ public class Crawler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (doc!=null)
+        if (doc!=null) {
             resultText = extractText(doc);
-        if(resultText!=null)
+            //System.out.println("Extracted");
+        }
+        if(resultText!=null) {
             scrapedResult.setText(resultText);
+            //System.out.println("Result ________"+resultText);
+        }
         else
             scrapedResult.setText("NULL");
+        System.out.println("Final ______"+ scrapedResult.getText());
         return scrapedResult;
     }
 
 	private static String extractText(Document doc) {
         //System.out.println(doc.text());
+        String result = "";
+        result = result.concat(doc.select("p").text());
+        result = result.concat(doc.select("h1").text());
+        result = result.concat(doc.select("h2").text());
+        result = result.concat(doc.select("strong").text());
+        result = result.concat(doc.select("b").text());
+        result = result.concat(doc.select("summary").text());
         return doc.text();
 	}
 }

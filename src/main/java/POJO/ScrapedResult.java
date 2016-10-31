@@ -23,7 +23,7 @@ public class ScrapedResult {
     }
 
     public void setText(String data) {
-        this.text = text;
+        this.text += data;
     }
 
 }
