@@ -10,7 +10,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+<<<<<<< HEAD
 import com.sun.org.apache.xpath.internal.SourceTree;
+=======
+>>>>>>> 5f56adfef32fc08506ff3ccc5694ac42f3d6168e
 import fileHandling.SaveInFile;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
@@ -24,9 +27,12 @@ import POJO.ScrapedResult;
 public class Crawler {
     public static ArrayList<String> dates;
 
+    public static int delay;
+
     private static final String USER_AGENT_MAC = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36";
 
 	public static ArrayList<ScrapedResult> input(String query, ScrapedResult scrapedResult, String date){
+<<<<<<< HEAD
         System.out.println("I'm here and the date is "+date.toString());
         ArrayList<ScrapedResult> resultList = new ArrayList<ScrapedResult>();
 //        DateFormat formatter = new SimpleDateFormat("/MM/YYYY");
@@ -36,6 +42,16 @@ public class Crawler {
             //wanted = (Date)formatter.parse(date);
 //            System.out.println("HAHAHAHAHA "+wanted.toString());
             resultList = processPage(scrapedResult,date,"https://www.google.co.in/search?q="+query+"&hl=en&gl=in&as_drrb=b&authuser=0&source=lnt&tbs=cdr%3A1%2Ccd_min%3A"+date_all[0]+"%2" + "F"+date_all[1]+"%2F"+date_all[2]+"%2Ccd_max%3A"+date_all[0]+"%2F"+date_all[1]+"%2F"+date_all[2]+"&tbm=nws");
+=======
+        ArrayList<ScrapedResult> resultList = new ArrayList<ScrapedResult>();
+        DateFormat formatter = new SimpleDateFormat("DD/MM/YYYY");
+        String wanted = date;
+        try {
+            String[] date_all = date.split("/");
+            //wanted = (Date)formatter.parse(date);
+            System.out.println("HAHAHAHAHA "+wanted.toString());
+            resultList = processPage(scrapedResult,wanted,"https://www.google.co.in/search?q="+query+"&hl=en&gl=in&as_drrb=b&authuser=0&source=lnt&tbs=cdr%3A1%2Ccd_min%3A"+date_all[0]+"%2" + "F"+date_all[1]+"%2F"+date_all[2]+"%2Ccd_max%3A"+date_all[0]+"%2F"+date_all[1]+"%2F"+date_all[2]+"&tbm=nws");
+>>>>>>> 5f56adfef32fc08506ff3ccc5694ac42f3d6168e
        }
 //       catch (ParseException e) {
 //            e.printStackTrace();
@@ -49,6 +65,7 @@ public class Crawler {
     public ArrayList<String> pickDates() {
         dates = new ArrayList<String>();
         System.out.println("Dates");
+<<<<<<< HEAD
         //Scanner sc = new Scanner(System.in);
         //String date = sc.nextLine();
 
@@ -69,6 +86,13 @@ public class Crawler {
             dates.add(dt.toString());
             System.out.println(""+dt.toString());
             System.out.println("111111111111111111111");
+=======
+        Scanner sc = new Scanner(System.in);
+        String date = sc.nextLine();
+        while (!date.equals("-1")){
+            dates.add(date);
+            date = sc.nextLine();
+>>>>>>> 5f56adfef32fc08506ff3ccc5694ac42f3d6168e
         }
         //////////////////
 
@@ -85,13 +109,21 @@ public class Crawler {
         ArrayList<ScrapedResult> resultList = new ArrayList<ScrapedResult>();
         Crawler crawler = new Crawler();
 
+<<<<<<< HEAD
+=======
+        delay = 10;         // 10 seconds
+
+>>>>>>> 5f56adfef32fc08506ff3ccc5694ac42f3d6168e
 //        10/10/2014
 //        17/07/2000
 //        15/10/2016
 //        -1
 
         dates = crawler.pickDates();
+<<<<<<< HEAD
         System.out.println("Dates size : "+dates.size());
+=======
+>>>>>>> 5f56adfef32fc08506ff3ccc5694ac42f3d6168e
         ScrapedResult pojo = null;
         SaveInFile saveInFile = new SaveInFile();
         Scanner sc = new Scanner(System.in);
@@ -118,6 +150,8 @@ public class Crawler {
             ArrayList<ScrapedResult> resultList= new ArrayList<ScrapedResult>();
             System.out.println("------ :\t\t" + URL+"\t\t: ------");
             Document doc = null;
+
+
             try {
                 doc = Jsoup.connect(URL).userAgent(USER_AGENT_MAC).get();
                 //System.out.println(""+doc.html());
@@ -142,6 +176,16 @@ public class Crawler {
                 e1.printStackTrace();
                 return null;
             }
+<<<<<<< HEAD
+=======
+
+            try{
+                Thread.sleep(delay * 1000);
+            }catch(InterruptedException ie){
+                
+            }
+
+>>>>>>> 5f56adfef32fc08506ff3ccc5694ac42f3d6168e
         System.out.println("HA  "+resultList.size());
             return resultList;
     }
@@ -156,6 +200,7 @@ public class Crawler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+<<<<<<< HEAD
         if (doc!=null) {
             resultText = extractText(doc);
             //System.out.println("Extracted");
@@ -167,11 +212,20 @@ public class Crawler {
         else
             scrapedResult.setText("NULL");
         System.out.println("Final ______"+ scrapedResult.getText());
+=======
+        if (doc!=null)
+            resultText = extractText(doc);
+        if(resultText!=null)
+            scrapedResult.setText(resultText);
+        else
+            scrapedResult.setText("NULL");
+>>>>>>> 5f56adfef32fc08506ff3ccc5694ac42f3d6168e
         return scrapedResult;
     }
 
 	private static String extractText(Document doc) {
         //System.out.println(doc.text());
+<<<<<<< HEAD
         String result = "";
         result = result.concat(doc.select("p").text());
         result = result.concat(doc.select("h1").text());
@@ -179,6 +233,8 @@ public class Crawler {
         result = result.concat(doc.select("strong").text());
         result = result.concat(doc.select("b").text());
         result = result.concat(doc.select("summary").text());
+=======
+>>>>>>> 5f56adfef32fc08506ff3ccc5694ac42f3d6168e
         return doc.text();
 	}
 }
